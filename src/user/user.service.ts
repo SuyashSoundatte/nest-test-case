@@ -1,23 +1,25 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { UserRepository } from './user.repository';
 import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly repo: UserRepository) {}
+  constructor(
+    private readonly userRepository: UserRepository,
+  ) {}
 
   async createUser(dto: CreateUserDto) {
-    const userExists = await this.repo.findByNumber(dto.mobile);
+    const userExists = await this.userRepository.findByNumber(dto.mobile);
     if(userExists) throw new BadRequestException("User already exists!");
-    return this.repo.create(dto.mobile, dto.name);
+    return this.userRepository.create(dto.mobile, dto.name);
   }
 
   async getAllUsers() {
-    return this.repo.findAll();
+    return this.userRepository.findAll();
   }
 
   async getUser(id: number) {
-    const user = await this.repo.findById(id);
+    const user = await this.userRepository.findById(id);
     if (!user) throw new NotFoundException('User not found');
     return user;
   }
@@ -25,11 +27,11 @@ export class UserService {
   async updateUser(id: number, dto: UpdateUserDto) {
     await this.getUser(id);
 
-    return this.repo.update(id, dto.mobile, dto.name);
+    return this.userRepository.update(id, dto.mobile, dto.name);
   }
 
   async deleteUser(id: number) {
     await this.getUser(id);
-    return this.repo.delete(id);
+    return this.userRepository.delete(id);
   }
 }

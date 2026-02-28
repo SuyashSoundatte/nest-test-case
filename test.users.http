@@ -5,8 +5,8 @@ POST {{baseUrl}}/users
 Content-Type: application/json
 
 {
-  "mobile": "9049052187",
-  "name": "Parth"
+  "mobile": "9049052188",
+  "name": "Ritesh"
 }
 
 ###
