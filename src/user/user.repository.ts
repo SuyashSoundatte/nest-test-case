@@ -55,4 +55,13 @@ export class UserRepository {
   async delete(id: number): Promise<void> {
     await this.pool.query(`DELETE FROM "User" WHERE id = $1`, [id]);
   }
+
+  async findByNumber(mobile: string): Promise<boolean>{
+    const result = await this.pool.query('SELECT id FROM "User" WHERE mobile = $1', [mobile]);
+
+    if(result.rows.length === 0){
+      return false;
+    }
+    return true;
+  }
 }
