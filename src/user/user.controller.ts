@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Delete,
+  HttpCode,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
@@ -35,6 +36,7 @@ export class UserController {
   }
 
   @Delete(':id')
+  @HttpCode(204)
   remove(@Param('id') id: string) {
     return this.service.deleteUser(Number(id));
   }
