@@ -49,7 +49,7 @@ export class UserRepository {
       [mobile ? mobile.toString() : null, name ?? null, id],
     );
 
-    return result.rows[0];
+    return result.rows[0] ?? null;
   }
 
   async delete(id: number): Promise<void> {
