@@ -32,6 +32,6 @@ Content-Type: application/json
 ###
 
 ### Delete User
-DELETE {{baseUrl}}/users/4
+DELETE {{baseUrl}}/users/5
 
 ###
