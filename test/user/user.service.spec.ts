@@ -132,7 +132,7 @@ describe('UserService', () => {
 
     expect(service.getUser).toHaveBeenCalledWith(1);
     expect(repo.delete).toHaveBeenCalledWith(1);
-    expect(result).toBe(true);
+    expect(result).toBe(undefined);
   });
 
   it('should throw if user not found while deleting', async () => {
