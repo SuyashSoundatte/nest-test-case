@@ -1,49 +1,62 @@
-name: NestJs CI
+name: NestJs CI 
 
-on:
-  push:
+on: 
+  push: 
     branches:
       - main
 
 jobs:
-  build:
+  build: 
     runs-on: ubuntu-latest
-    environment: uat-test-case
-
-    services:
-      postgres:
-        image: postgres:15
-        ports:
-          - 5432:5432
-        env:
-          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
-        options: >-
-          --health-cmd="pg_isready -U ${{ secrets.POSTGRES_USER }}"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
 
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_USER: ${{ secrets.POSTGRES_USER }}
+      DB_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      DB_NAME: ${{ secrets.POSTGRES_DB }}
 
-    steps:
-      - uses: actions/checkout@v4
+    steps: 
+      - name: checkout code
+        uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v4
+      - name: pnpm setup
+        uses: pnpm/action-setup@v4
 
-      - run: echo ${{ secrets.POSTGRES_USER }}
-
-      - uses: actions/setup-node@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: "pnpm"
+          cache: 'pnpm'
 
-      - run: pnpm install
+      - name: Install pnpm Dependencies globally 
+        run: npm install -g pnpm
 
-      - run: pnpm prisma migrate deploy
+      - name: Install node modules
+        run: pnpm install
 
-      - run: pnpm run build
+      - name: Start Docker services
+        run: docker compose up -d
 
-      - run: pnpm test
+      - name: Wait for Postgres
+        run: |
+          for i in {1..10}; do
+            nc -z localhost 5432 && echo "Postgres ready" && exit 0
+            echo "Waiting for Postgres..."
+            sleep 3
+          done
+          exit 1
+
+      - name: Run migrations for prisma
+        run: pnpm prisma migrate deploy
+
+      - name: Build Project
+        run: pnpm run build
+
+      - name: Run Tests
+        run: pnpm test   
+
+      - name: Stop containers
+        if: always()
+        run: docker compose down  
