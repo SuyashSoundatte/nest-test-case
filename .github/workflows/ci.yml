@@ -47,7 +47,7 @@ jobs:
             echo "Waiting for Postgres..."
             sleep 3
           done
-          echo "Postgres failed to start"
+          echo "Postgres failed to start..."
           exit 1    
 
       - name: Run migrations for prisma
