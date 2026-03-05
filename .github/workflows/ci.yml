@@ -46,6 +46,19 @@ jobs:
           echo "DB_PASSWORD=$DB_PASSWORD"
           echo "DB_NAME=$DB_NAME"
 
+      - name: docker service start
+        run: docker compose up -d
+
+      - name: Wait for Postgres
+        run: |
+          for i in {1..10}; do
+            docker exec nest_postgres pg_isready -U postgres && echo "Postgres ready" && exit 0
+            echo "Waiting for Postgres..."
+            sleep 3
+          done
+          echo "Postgres failed to start"
+          exit 1    
+
       - name: Run migrations for prisma
         run: pnpm prisma migrate deploy
 
