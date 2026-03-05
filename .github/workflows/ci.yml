@@ -1,0 +1,29 @@
+name: NestJs CI 
+
+on: 
+  push: 
+    branches:
+      - main
+
+jobs:
+  build: 
+    runs-on: ubuntu-latest
+
+    steps: 
+      - name: checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - name: Install Dependencies
+        run: npm install -g pnpm
+
+      - name: Build Project
+        run: pnpm run build
+
+      - name: Run Tests
+        run: pnpm test   
