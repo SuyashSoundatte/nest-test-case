@@ -8,6 +8,7 @@ on:
 jobs:
   build: 
     runs-on: ubuntu-latest
+    environment: uat-test-case
 
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
@@ -36,47 +37,14 @@ jobs:
       - name: Install node modules
         run: pnpm install
 
-      - name: Check if secrets are coming
+      - name: Debug environment variables
         run: |
-          if [ -z "${{ secrets.DATABASE_URL }}" ]; then
-          echo "DATABASE_URL secret is **NOT set**!"
-          exit 1
-          else
-            echo "DATABASE_URL secret is set"
-          fi
-
-          if [ -z "${{ secrets.POSTGRES_USER }}" ]; then
-            echo "POSTGRES_USER secret is **NOT set**!"
-            exit 1
-          else
-            echo "POSTGRES_USER secret is set"
-          fi
-
-          if [ -z "${{ secrets.POSTGRES_PASSWORD }}" ]; then
-            echo "POSTGRES_PASSWORD secret is **NOT set**!"
-            exit 1
-          else
-            echo "POSTGRES_PASSWORD secret is set"
-          fi
-
-          if [ -z "${{ secrets.POSTGRES_DB }}" ]; then
-            echo "POSTGRES_DB secret is **NOT set**!"
-            exit 1
-          else
-            echo "POSTGRES_DB secret is set"
-          fi  
-
-      - name: Start Docker services
-        run: docker compose up -d
-
-      - name: Wait for Postgres
-        run: |
-          for i in {1..10}; do
-            nc -z localhost 5432 && echo "Postgres ready" && exit 0
-            echo "Waiting for Postgres..."
-            sleep 3
-          done
-          exit 1
+          echo "DATABASE_URL=$DATABASE_URL"
+          echo "DB_HOST=$DB_HOST"
+          echo "DB_PORT=$DB_PORT"
+          echo "DB_USER=$DB_USER"
+          echo "DB_PASSWORD=$DB_PASSWORD"
+          echo "DB_NAME=$DB_NAME"
 
       - name: Run migrations for prisma
         run: pnpm prisma migrate deploy
