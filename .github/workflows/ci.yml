@@ -12,11 +12,6 @@ jobs:
 
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      DB_HOST: localhost
-      DB_PORT: 5432
-      DB_USER: ${{ secrets.POSTGRES_USER }}
-      DB_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-      DB_NAME: ${{ secrets.POSTGRES_DB }}
 
     steps: 
       - name: checkout code
@@ -30,9 +25,6 @@ jobs:
         with:
           node-version: 22
           cache: 'pnpm'
-
-      - name: Install pnpm Dependencies globally 
-        run: npm install -g pnpm
 
       - name: Install node modules
         run: pnpm install
