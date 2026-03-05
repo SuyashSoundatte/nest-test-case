@@ -37,15 +37,6 @@ jobs:
       - name: Install node modules
         run: pnpm install
 
-      - name: Debug environment variables
-        run: |
-          echo "DATABASE_URL=$DATABASE_URL"
-          echo "DB_HOST=$DB_HOST"
-          echo "DB_PORT=$DB_PORT"
-          echo "DB_USER=$DB_USER"
-          echo "DB_PASSWORD=$DB_PASSWORD"
-          echo "DB_NAME=$DB_NAME"
-
       - name: docker service start
         run: docker compose up -d
 
