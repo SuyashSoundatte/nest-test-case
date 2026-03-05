@@ -22,8 +22,11 @@ jobs:
           node-version: 22
           cache: 'pnpm'
 
-      - name: Install Dependencies
+      - name: Install pnpm Dependencies globally 
         run: npm install -g pnpm
+
+      - name: Install node modules
+        run: pnpm install
 
       - name: Build Project
         run: pnpm run build
