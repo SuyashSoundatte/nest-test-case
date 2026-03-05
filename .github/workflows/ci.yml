@@ -36,6 +36,36 @@ jobs:
       - name: Install node modules
         run: pnpm install
 
+      - name: Check if secrets are coming
+        run: |
+          if [ -z "${{ secrets.DATABASE_URL }}" ]; then
+          echo "DATABASE_URL secret is **NOT set**!"
+          exit 1
+          else
+            echo "DATABASE_URL secret is set"
+          fi
+
+          if [ -z "${{ secrets.POSTGRES_USER }}" ]; then
+            echo "POSTGRES_USER secret is **NOT set**!"
+            exit 1
+          else
+            echo "POSTGRES_USER secret is set"
+          fi
+
+          if [ -z "${{ secrets.POSTGRES_PASSWORD }}" ]; then
+            echo "POSTGRES_PASSWORD secret is **NOT set**!"
+            exit 1
+          else
+            echo "POSTGRES_PASSWORD secret is set"
+          fi
+
+          if [ -z "${{ secrets.POSTGRES_DB }}" ]; then
+            echo "POSTGRES_DB secret is **NOT set**!"
+            exit 1
+          else
+            echo "POSTGRES_DB secret is set"
+          fi  
+
       - name: Start Docker services
         run: docker compose up -d
 
