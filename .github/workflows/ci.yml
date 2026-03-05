@@ -1,56 +1,54 @@
-name: NestJs CI 
+name: NestJs CI
 
-on: 
-  push: 
+on:
+  push:
     branches:
       - main
 
 jobs:
-  build: 
+  build:
     runs-on: ubuntu-latest
     environment: uat-test-case
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: testdb
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
-    steps: 
-      - name: checkout code
+    steps:
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: pnpm setup
+      - name: Setup pnpm
         uses: pnpm/action-setup@v4
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'pnpm'
+          cache: pnpm
 
-      - name: Install node modules
+      - name: Install dependencies
         run: pnpm install
 
-      - name: docker service start
-        run: docker compose up -d
-
-      - name: Wait for Postgres
-        run: |
-          for i in {1..10}; do
-            docker exec nest_postgres pg_isready -U postgres && echo "Postgres ready" && exit 0
-            echo "Waiting for Postgres..."
-            sleep 3
-          done
-          echo "Postgres failed to start..."
-          exit 1    
-
-      - name: Run migrations for prisma
+      - name: Run Prisma migrations
         run: pnpm prisma migrate deploy
 
-      - name: Build Project
+      - name: Build project
         run: pnpm run build
 
-      - name: Run Tests
-        run: pnpm test   
-
-      - name: Stop containers
-        if: always()
-        run: docker compose down  
+      - name: Run tests
+        run: pnpm test
