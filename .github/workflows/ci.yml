@@ -8,6 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment: uat-test-case
 
     services:
       postgres:
@@ -31,6 +32,8 @@ jobs:
       - uses: actions/checkout@v4
 
       - uses: pnpm/action-setup@v4
+
+      - run: echo ${{ secrets.POSTGRES_USER }}
 
       - uses: actions/setup-node@v4
         with:
