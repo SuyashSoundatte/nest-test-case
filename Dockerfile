@@ -22,13 +22,13 @@ RUN pnpm build
 RUN pnpm prune --prod
 
 # ---------- PROD STAGE ----------
-FROM node:20.18.1-bookworm-slim@sha256:b2c8e0eb8a6aeeae33b2711f8f516003e27ee45804e270468d937b3214f2f0cc AS prod
+# FROM node:20.18.1-bookworm-slim@sha256:b2c8e0eb8a6aeeae33b2711f8f516003e27ee45804e270468d937b3214f2f0cc AS prod
+
+FROM node:20.18.1-alpine@sha256:24fb6aa7020d9a20b00d6da6d1714187c45ed00d1eb4adb01395843c338b9372
 
 ENV NODE_ENV=production
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    dumb-init \
-    && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache dumb-init
 
 WORKDIR /app
 
@@ -40,4 +40,5 @@ USER node
 
 EXPOSE 3000
 
-CMD ["dumb-init", "node", "dist/src/main.js"]
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+CMD ["node", "dist/src/main.js"]
