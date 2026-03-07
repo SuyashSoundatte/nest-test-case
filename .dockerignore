@@ -1,0 +1,53 @@
+# dependencies
+node_modules
+.pnpm-store
+
+# build output
+dist
+build
+coverage
+
+# logs
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+
+# env files
+.env
+.env.*
+!.env.example
+
+# git
+.git
+.gitignore
+.gitattributes
+
+# docker files (optional)
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# IDE / editor
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# testing
+coverage
+test-results
+
+# documentation
+*.md
+docs
+
+# misc
+tmp
+temp
+.cache
